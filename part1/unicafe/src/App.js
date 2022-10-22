@@ -30,7 +30,7 @@ const Statistics = (props) => {
       <h1>give feedback</h1>
       <Button goodRes={props.goodRes} badRes={props.badRes} neutralRes={props.neutralRes}/>
       <h1>statistics</h1>
-      {props.all == 0?"No feedback given":
+      {props.all === 0?"No feedback given":
       <table>
       
         <StatisticLine text="good" value={props.good} />
