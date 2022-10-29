@@ -1,17 +1,27 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 
 import Input from "./components/Input"
 import Result from "./components/Result"
 import Header from "./components/Header"
 import Button from "./components/Button"
+import axios from "axios"
 
 function App() {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-1234567', id: 1},
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [filter, setFilter] = useState('')
+
+
+  useEffect(()=> {
+    axios
+        .get("http://localhost:3001/persons")
+        .then((response) => {
+          setPersons(response.data)
+        })
+  }, [])
+
+
   const handleChange = (e) => {
     const {type, value} = e.target
     if(type === "text"){
