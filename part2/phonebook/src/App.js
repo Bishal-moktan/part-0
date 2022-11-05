@@ -6,14 +6,14 @@ import Result from "./components/Result";
 import Header from "./components/Header";
 import Button from "./components/Button";
 import personService from "./services/person"
-import person from "./services/person";
+import Notification from "./components/Notification";
 
 function App() {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNum, setNewNum] = useState("");
   const [filter, setFilter] = useState("");
-
+  const [message, setMessage] = useState(null)
   const getData = () => {
     personService
               .getAll()
@@ -49,6 +49,10 @@ function App() {
         if (isTrue) {
           const newPerson = { ...person, number: personObj.number };
           personService.update(person.id, newPerson).catch(error => console.log(error));
+          setMessage(`Updated ${person.name}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 3000);
         }
 
         setNewName("");
@@ -58,6 +62,10 @@ function App() {
     }
     personService.create(personObj).then((data) => {
       setPersons(persons.concat(personObj));
+      setMessage(`Added ${personObj.name}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000);
       setNewName("");
       setNewNum("");
     })
@@ -73,19 +81,25 @@ function App() {
   const search = (e) => {
     setFilter(e.target.value);
   };
+
   const dataToShow = filter
     ? persons.filter((person) =>
         person.name.toLowerCase().includes(filter.toLowerCase())
       )
     : persons;
 
-  const deleteNum = (id) => {
-    personService.remove(id).catch(error => console.log(error))
+  const deleteNum = (id, name) => {
+    personService.remove(id)
+        .catch(error => {
+          setMessage(`Information of ${name} has been already removed from the server`)
+        }
+          )
     getData();
   };
   return (
     <>
       <Header text="Phonebook" />
+      <Notification message={message}/>
       <Input
         text="filter shown with"
         type="text"
